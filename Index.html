@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<title>Holograma (solo HTML/CSS)</title>
+<style>
+  :root{
+    --c: #00fff0;            /* color neón */
+    --bg: #05070a;           /* fondo oscuro */
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; display:grid; place-items:center; background:
+      radial-gradient(1200px 600px at 50% 120%, #00121a 0 30%, transparent 60%),
+      radial-gradient(800px 400px at 50% 140%, rgba(0,255,240,.12), transparent 70%),
+      var(--bg);
+    font-family: system-ui,Segoe UI,Roboto,Arial;
+  }
+
+  .stage{
+    perspective: 900px;
+    filter: drop-shadow(0 10px 30px rgba(0,255,240,.25));
+  }
+
+  .holo{
+    position:relative;
+    padding:18px 36px;
+    font-size: clamp(36px, 8vw, 96px);
+    letter-spacing:.15em;
+    text-transform:uppercase;
+    color: var(--c);
+    transform: rotateX(18deg);
+    border: 1px solid rgba(0,255,240,.25);
+    border-radius: 16px;
+    backdrop-filter: blur(2px);
+    /* brillo */
+    text-shadow:
+      0 0 6px var(--c),
+      0 0 18px var(--c),
+      0 0 42px rgba(0,255,240,.75),
+      0 0 80px rgba(0,255,240,.6);
+    /* leve vibración */
+    animation: float 3.5s ease-in-out infinite;
+  }
+
+  /* líneas de escaneo */
+  .holo::before{
+    content:"";
+    position:absolute; inset:0;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0,255,240,.12) 0 2px,
+      rgba(0,0,0,0) 2px 4px
+    );
+    mix-blend-mode: screen;
+    border-radius: inherit;
+    animation: scan 2.2s linear infinite;
+    pointer-events:none;
+  }
+
+  /* reflejo inferior “vidrio” */
+  .holo::after{
+    content: attr(data-text);
+    position:absolute; left:0; right:0; top:100%;
+    transform: rotateX(180deg) translateY(10px);
+    transform-origin: top;
+    color: var(--c);
+    opacity:.15;
+    filter: blur(2px);
+    text-shadow: none;
+    pointer-events:none;
+  }
+
+  /* halo circular en el piso */
+  .halo{
+    width:min(55vmin, 520px); height: clamp(16px, 4vmin, 32px);
+    border-radius:50%;
+    background: radial-gradient(closest-side, rgba(0,255,240,.5), rgba(0,255,240,0));
+    transform: translateY(24px);
+    animation: haloPulse 3.5s ease-in-out infinite;
+    filter: blur(1px);
+  }
+
+  @keyframes float{
+    0%,100%{ transform: rotateX(18deg) translateY(0) }
+    50%    { transform: rotateX(18deg) translateY(-6px) }
+  }
+  @keyframes haloPulse{
+    0%,100%{ transform: translateY(24px) scaleX(1) }
+    50%    { transform: translateY(24px) scaleX(1.06) }
+  }
+  @keyframes scan{
+    0%  { clip-path: inset(0 0 100% 0) }
+    50% { clip-path: inset(0 0 0 0) }
+    100%{ clip-path: inset(100% 0 0 0) }
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="holo" data-text="HOLOGRAMA">HOLOGRAMA</div>
+    <div class="halo" aria-hidden="true"></div>
+  </div>
+</body>
+</html>
